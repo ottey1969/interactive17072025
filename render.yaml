@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: sofeia-ai-app
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+    healthCheckPath: /api/health
+  - type: pserv
+    name: sofeia-ai-db
+    plan: free
+    databaseName: sofeia_ai
+    databaseUser: sofeia_user

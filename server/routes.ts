@@ -18,6 +18,11 @@ interface WebSocketClient extends WebSocket {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Health check endpoint for deployment platforms
+  app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'healthy', timestamp: new Date().toISOString() });
+  });
+
   // Setup local authentication system
   setupAuth(app);
   console.log("✅ Local authentication system configured successfully");
