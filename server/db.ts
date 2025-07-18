@@ -1,8 +1,6 @@
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
+import { Pool } from 'pg'; // Use the standard pg client
+import { drizzle } from 'drizzle-orm/node-postgres'; // Use node-postgres for drizzle
 import * as schema from "@shared/schema";
-
-// neonConfig.webSocketConstructor = ws;
 
 if (!process.env.DATABASE_URL) {
   throw new Error(
@@ -20,4 +18,4 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 export const pool = new Pool(connectionConfig);
-export const db = drizzle({ client: pool, schema });
+export const db = drizzle(pool, { schema });
