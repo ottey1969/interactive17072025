@@ -1,5 +1,8 @@
-import pkg from 'pg';
-const { Pool } = pkg;
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const pg = require('pg');
+const { Pool } = pg;
+
 import { drizzle } from 'drizzle-orm/node-postgres';
 import * as schema from "@shared/schema";
 
