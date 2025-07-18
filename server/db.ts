@@ -1,5 +1,6 @@
-import { Pool } from 'pg'; // Use the standard pg client
-import { drizzle } from 'drizzle-orm/node-postgres'; // Use node-postgres for drizzle
+import pkg from 'pg';
+const { Pool } = pkg;
+import { drizzle } from 'drizzle-orm/node-postgres';
 import * as schema from "@shared/schema";
 
 if (!process.env.DATABASE_URL) {
