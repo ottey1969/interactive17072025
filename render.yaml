@@ -1,18 +1,12 @@
 services:
   - type: web
-    name: sofeia-ai-app
+    name: interactive17072025
     env: node
-    plan: free
-    buildCommand: npm install --include=dev && npx vite build && npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+    buildCommand: npm run build
     startCommand: npm start
+    instanceType: free
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 10000
-    healthCheckPath: /api/health
-  - type: pserv
-    name: sofeia-ai-db
-    plan: free
-    databaseName: sofeia_ai
-    databaseUser: sofeia_user
+        value: "10000"
