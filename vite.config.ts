@@ -26,6 +26,9 @@ export default defineConfig(async () => {
     build: {
       outDir: path.resolve(import.meta.dirname, "dist/public"),
       emptyOutDir: true,
+      rollupOptions: {
+        external: ["zod/v4/core"],
+      },
     },
     server: {
       fs: {
