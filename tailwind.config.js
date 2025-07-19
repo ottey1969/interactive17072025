@@ -1,4 +1,5 @@
-/** @type {import('tailwindcss').Config} */
+/** @type {import("tailwindcss").Config} */
+const defaultTheme = require("tailwindcss/defaultTheme");
 module.exports = {
   content: [
     "./index.html",
@@ -7,7 +8,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        border: "hsl(var(--border))",      },
+        border: "hsl(var(--border))",
+      },
+      fontFamily: {
+        sans: ["var(--font-sans)", ...defaultTheme.fontFamily.sans],
+      },
     },
   },
   plugins: [],
