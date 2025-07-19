@@ -193,3 +193,80 @@ export function setupAuth(app: Express) {
     });
   });
 }
+  // Password reset endpoint for admin use
+  app.post("/api/admin/reset-password", isAuthenticated, async (req, res) => {
+    try {
+      // Check if user is admin
+      if (!req.user?.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { email, newPassword } = req.body;
+      
+      // Validate input
+      if (!email || !newPassword) {
+        return res.status(400).json({ message: "Email and new password are required" });
+      }
+      
+      if (newPassword.length < 8) {
+        return res.status(400).json({ message: "Password must be at least 8 characters long" });
+      }
+
+      // Find user by email
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Hash new password
+      const hashedPassword = await hashPassword(newPassword);
+      
+      // Update user password in database
+      await storage.updateUserPassword(user.id, hashedPassword);
+
+      res.status(200).json({ 
+        message: `Password reset successfully for ${email}`,
+        userId: user.id
+      });
+    } catch (error) {
+      console.error("Password reset error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Self password reset endpoint
+  app.post("/api/reset-password", async (req, res) => {
+    try {
+      const { email, newPassword } = req.body;
+      
+      // Validate input
+      if (!email || !newPassword) {
+        return res.status(400).json({ message: "Email and new password are required" });
+      }
+      
+      if (newPassword.length < 8) {
+        return res.status(400).json({ message: "Password must be at least 8 characters long" });
+      }
+
+      // Find user by email
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Hash new password
+      const hashedPassword = await hashPassword(newPassword);
+      
+      // Update user password in database
+      await storage.updateUserPassword(user.id, hashedPassword);
+
+      res.status(200).json({ 
+        message: `Password reset successfully for ${email}`,
+        userId: user.id
+      });
+    } catch (error) {
+      console.error("Password reset error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+

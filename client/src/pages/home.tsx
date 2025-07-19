@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Header from "@/components/layout/Header";
 import ChatHistory from "@/components/chat/ChatHistory";
 import AIActivityFeed from "@/components/chat/AIActivityFeed";
@@ -17,6 +17,8 @@ export default function Home() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [chatMode, setChatMode] = useState<'manus' | 'grant' | 'seo' | 'replit'>('manus');
+  
+  const queryClient = useQueryClient();
 
   // Fetch conversations
   const { data: conversations = [], refetch: refetchConversations } = useQuery<Conversation[]>({
@@ -114,9 +116,27 @@ export default function Home() {
   };
 
   const handleNewConversation = () => {
+    // Clear all conversation-related state
     setSelectedConversation(null);
     setAiActivities([]);
     setIsTyping(false);
+    
+    // Clear cached messages for all conversations to ensure clean state
+    queryClient.removeQueries({ 
+      queryKey: ['/api/conversations'], 
+      predicate: (query) => query.queryKey.includes('messages')
+    });
+    
+    // Clear AI activities cache
+    queryClient.removeQueries({ 
+      queryKey: ['/api/ai-activities']
+    });
+    
+    // Close any existing WebSocket connection
+    if (socket) {
+      socket.close();
+      setSocket(null);
+    }
   };
 
   const handleMessageSent = (userMessage: string) => {
@@ -181,6 +201,9 @@ export default function Home() {
         return 'manus_pro';
     }
   };
+
+  // Get messages for display - return empty array if no conversation is selected
+  const displayMessages = selectedConversation ? messages : [];
 
   return (
     <div className="h-screen flex flex-col bg-slate-900">
@@ -274,7 +297,7 @@ export default function Home() {
         <div className="flex-1 flex flex-col">
           <ChatInterface 
             conversation={selectedConversation}
-            messages={messages}
+            messages={displayMessages}
             onConversationCreated={handleConversationCreated}
             onMessageSent={handleMessageSent}
             isTyping={isTyping}
@@ -370,3 +393,4 @@ export default function Home() {
     </div>
   );
 }
+

@@ -464,6 +464,21 @@ export class DatabaseStorage implements IStorage {
   async deleteGrantProject(id: number): Promise<void> {
     await db.delete(grantProjects).where(eq(grantProjects.id, id));
   }
+
+  // Password management
+  async updateUserPassword(userId: string, hashedPassword: string): Promise<void> {
+    await db.update(users)
+      .set({ 
+        password: hashedPassword,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, userId));
+  }
 }
 
 export const storage = new DatabaseStorage();
+
+  
+  // Password management
+  updateUserPassword(userId: string, hashedPassword: string): Promise<void>;
+
