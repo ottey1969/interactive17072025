@@ -7,7 +7,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        border: "#e5e7eb",      },
+        border: "hsl(var(--border))",      },
     },
   },
   plugins: [],
